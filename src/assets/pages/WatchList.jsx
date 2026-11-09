@@ -8,16 +8,23 @@ function WatchList() {
   const [watches, setWatches] = useState([]);
 
   //画面が表示された時にAPIからデータを取得
-  useEffect(() => {
+  const fetchWatches = () => {
+    // useEffect(() => {
     axios
       .get("http://localhost:8080/api/watches")
       .then((response) => {
-        console.log("API取得成功:", response.data);
+        // console.log("API取得成功:", response.data);
+        console.log(response.data);
         setWatches(response.data);
       })
       .catch((error) => {
         console.error("時計データの取得に失敗しました", error);
       });
+  };
+  // }, []);
+
+  useEffect(() => {
+    fetchWatches();
   }, []);
 
   return (
@@ -26,7 +33,8 @@ function WatchList() {
       <Row xs={1} sm={2} lg={3} className="g-3">
         {watches.map((watch) => (
           <Col key={watch.id}>
-            <WatchCard watch={watch} />
+            {/* <WatchCard watch={watch} /> */}
+            <WatchCard watch={watch} onUse={fetchWatches} />
           </Col>
         ))}
       </Row>
