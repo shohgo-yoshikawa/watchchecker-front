@@ -1,9 +1,16 @@
 import axios from "axios";
 import { Card, Button, Badge } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 // import Badge from "../../../node_modules/react-bootstrap/esm/Badge";
 
 // function WatchCard({ watch }) {
 function WatchCard({ watch, onUse }) {
+  const navigate = useNavigate();
+  //詳細画面へ移動
+  const handleDetail = () => {
+    navigate(`/watches/${watch.id}`);
+  };
+
   //   const isQuartz = watch.movement === "クォーツ";
   const isQuartz = watch.driveType === "クォーツ";
 
@@ -20,7 +27,11 @@ function WatchCard({ watch, onUse }) {
   };
 
   return (
-    <Card className="watch-card">
+    <Card
+      className="watch-card"
+      onClick={handleDetail}
+      style={{ cursol: "pointer" }}
+    >
       <Card.Body className="d-flex justify-content-between align-items-center">
         <div>
           {/* <div className="watch-brand">{watch.brand}</div> */}
@@ -30,11 +41,11 @@ function WatchCard({ watch, onUse }) {
 
           <div className="d-flex align-items-center gap-2">
             <Badge bg="light" text="dark" className="border">
-              {watch.movement}
+              {watch.driveType}
             </Badge>
 
             <small className="text-secondary">
-              {watch.daysSinseLastUsed === -1
+              {watch.daysSinceLastUsed === -1
                 ? "稼働記録なし"
                 : `${watch.daysSinceLastUsed}日前稼働`}
               {/* {isQuartz ? "稼働記録なし" : `${watch.daysSinceLastRun}日前稼働`} */}
@@ -48,7 +59,14 @@ function WatchCard({ watch, onUse }) {
           </Button>
         ) : (
           // <Button variant="dark" className="watch-button">
-          <Button variant="dark" className="watch-button" onClick={handleUse}>
+          <Button
+            variant="dark"
+            className="watch-button"
+            onClick={(event) => {
+              event.stopPropagation();
+              handleUse();
+            }}
+          >
             ↻<small>稼働</small>
           </Button>
         )}

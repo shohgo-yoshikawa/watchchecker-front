@@ -1,11 +1,14 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Form, Row } from "react-bootstrap";
 import WatchCard from "../components/WatchCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function WatchList() {
   //時計データを保存する場所
   const [watches, setWatches] = useState([]);
+  //検索キーワードを保存する場所
+  const [keyword, setKeyword] = useState("");
 
   //画面が表示された時にAPIからデータを取得
   const fetchWatches = () => {
@@ -27,17 +30,53 @@ function WatchList() {
     fetchWatches();
   }, []);
 
+  //検索キーワードに一致する時計だけを抽出
+  const filteredWatches = watches.filter((watch) => {
+    const searchText = keyword.toLowerCase();
+
+    return (
+      watch.brandName.toLowerCase().includes(searchText) ||
+      watch.modelName.toLowerCase().includes(searchText) ||
+      (watch.modelNumber ?? "").toLowerCase().includes(searchText)
+    );
+  });
+
   return (
     <Container className="py-4">
       <h1 className="mb-4">時計一覧</h1>
-      <Row xs={1} sm={2} lg={3} className="g-3">
-        {watches.map((watch) => (
-          <Col key={watch.id}>
-            {/* <WatchCard watch={watch} /> */}
-            <WatchCard watch={watch} onUse={fetchWatches} />
-          </Col>
-        ))}
-      </Row>
+      <div className="mb-3">
+        <Link to="/watches/new" className="btn btn-dark">
+          + 時計を登録する
+        </Link>
+      </div>
+      <Form.Control
+        type="text"
+        placeholder="ブランド名・モデル名・型番で検索"
+        value={keyword}
+        onChange={(event) => setKeyword(event.target.value)}
+        className="mb-4"
+        style={{
+          maxWidth: "420px",
+          borderRadius: "8px",
+          border: "1px solid #ddd",
+          padding: "10px 14px",
+          backgroundColor: "#fff",
+        }}
+      />
+
+      {filteredWatches.length === 0 ? (
+        <p className="text-secondary">該当する時計がありません。</p>
+      ) : (
+        <Row xs={1} sm={2} lg={3} className="g-3">
+          {/* {watches.map((watch) => ( */}
+          {filteredWatches.map((watch) => (
+            <Col key={watch.id}>
+              {/* <WatchCard watch={watch} /> */}
+              <WatchCard watch={watch} onUse={fetchWatches} />
+            </Col>
+          ))}
+        </Row>
+      )}
     </Container>
   );
 }
