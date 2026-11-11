@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function WatchCreate() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     // brandName: "",
     brandId: "",
@@ -17,6 +18,7 @@ function WatchCreate() {
   });
   //ブランド名を保存するstate
   const [brands, setBrands] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   //画面表示時にブランド一覧を取得
   useEffect(() => {
@@ -30,29 +32,53 @@ function WatchCreate() {
       });
   }, []);
 
-  console.log(formData);
+  //時計の新規登録
+  const handleSubmit = async (event) => {
+    //フォーム送信による画面の再読み込みを防ぐ
+    event.preventDefault();
+    //前回のエラーエッセージを消す
+    setErrorMessage("");
+
+    //必須項目の入力チェック
+    if (!formData.brandId || !formData.modelName.trim()) {
+      alert("ブランドとモデル名は必須です。");
+      return;
+    }
+
+    //空の日付はnullにする
+    const watchData = {
+      ...formData,
+      brandId: Number(formData.brandId),
+      lastUsedAt: formData.lastUsedAt || null,
+      lastMaintenanceAt: formData.lastMaintenanceAt || null,
+      batteryUpdatedAt: formData.batteryUpdatedAt || null,
+    };
+
+    try {
+      //Spring Bootに時計情報を送信
+      await axios.post("http://localhost:8080/api/watches", watchData);
+      //登録成功後、時計一覧画面へ移動
+      navigate("/watches");
+    } catch (error) {
+      console.error("時計の登録に失敗しました", error);
+      setErrorMessage("時計の登録に失敗しました。入力内容を確認してください。");
+    }
+  };
+
   return (
     <Container className="py-4">
       <Link to="/watches" className="btn btn-outline-dark mb-3">
         ←時計一覧に戻る
       </Link>
       <h1 className="mb-4">時計の新規登録</h1>
-      <Form>
-        {/* <Form.Group className="mb-3">
-          <Form.Label>ブランド</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="例:CARTIER"
-            value={formData.brandName}
-            onChange={(event) =>
-              setFormData({ ...formData, brandName: event.target.value })
-            }
-          />
-        </Form.Group> */}
-
+      {errorMessage && <p className="text-danger">{errorMessage}</p>}
+      <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
-          <Form.Label>ブランド</Form.Label>
+          <Form.Label>
+            ブランド<span className="text-danger">必須</span>
+          </Form.Label>
           <Form.Select
+            required
             value={formData.brandId}
             onChange={(event) =>
               setFormData({ ...formData, brandId: event.target.value })
@@ -65,9 +91,12 @@ function WatchCreate() {
               </option>
             ))}
           </Form.Select>
-          <Form.Label>モデル名</Form.Label>
+          <Form.Label>
+            モデル名<span className="text-danger">必須</span>
+          </Form.Label>
           <Form.Control
             type="text"
+            required
             placeholder="例:Tank Must"
             value={formData.modelName}
             onChange={(event) =>

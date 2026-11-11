@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 function WatchDetail() {
   //URLから時計IDを取得
   const { id } = useParams();
+  const navigate = useNavigate();
 
   //時計データを保存する場所
   const [watch, setWatch] = useState(null);
@@ -22,6 +23,28 @@ function WatchDetail() {
       });
   }, [id]);
 
+  //時計の削除
+  const handleDelete = async () => {
+    //削除してよいか確認
+    const result = window.confirm("この時計を削除してもよろしいですか？");
+
+    //キャンセルされた場合は何もしない
+    if (!result) {
+      return;
+    }
+
+    try {
+      //Spring Bootの削除APIを呼び出す
+      await axios.delete(`http://localhost:8080/api/watches/${id}`);
+
+      //削除成功後、時計画面へ移動
+      navigate("/watches");
+    } catch (error) {
+      console.error("時計の削除に失敗しました", error);
+      alert("時計の削除に失敗しました");
+    }
+  };
+
   return (
     <div>
       <Link to="/watches" className="btm btm-outline-dark mb-3">
@@ -35,6 +58,15 @@ function WatchDetail() {
       ) : (
         <div>
           <p>ブランド名:{watch.brandName}</p>
+          <Link
+            to={`/watches/${id}/edit`}
+            className="btn btn-outline-dark mb-3"
+          >
+            時計を編集する
+          </Link>
+          <button className="btn btn-danger mb-3 ms-2" onClick={handleDelete}>
+            時計を削除する
+          </button>
           <p>モデル名:{watch.modelName}</p>
           <p>型番:{watch.modelNumber}</p>
           <p>駆動方式:{watch.driveType}</p>
