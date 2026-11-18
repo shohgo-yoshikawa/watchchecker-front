@@ -5,8 +5,25 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 // import { Link } from "react-router-dom";
 import WatchCreate from "./WatchCreate";
+import { useNavigate } from "react-router-dom";
 
 function WatchList() {
+  const navigate = useNavigate();
+
+  // ログアウト処理
+  const handleLogout = async () => {
+    try {
+      // Spring BootのログアウトAPIを呼び出す
+      await axios.post("http://localhost:8080/api/auth/logout");
+
+      // ログイン画面に移動
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("ログアウトに失敗しました", error);
+      window.alert("ログアウトに失敗しました。もう一度お試しください。");
+    }
+  };
+
   //時計データを保存する場所
   const [watches, setWatches] = useState([]);
   //検索キーワードを保存する場所
@@ -52,6 +69,14 @@ function WatchList() {
       {/* ヘッダー */}
       <header className="watch-list-header">
         <span className="watch-list-logo">◉ WATCHCHECKER</span>
+
+        <button
+          type="button"
+          className="watch-logout-button"
+          onClick={handleLogout}
+        >
+          ログアウト
+        </button>
       </header>
       {/* コレクションの見出し */}
       <div className="watch-list-heading">

@@ -65,7 +65,7 @@ function WatchCard({ watch, onUse }) {
 
           <div className="d-flex align-items-center gap-2">
             <Badge bg="light" text="dark" className="watch-drive-badge">
-              {WatchCard.driveType || "未設定"}
+              {watch.driveType || "未設定"}
             </Badge>
 
             <small className="text-secondary watch-last-used">

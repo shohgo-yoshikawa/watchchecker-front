@@ -139,6 +139,22 @@
   font-style: 17px;
   font-weight: 500;
   margin-bottom: 7px;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 時計情報の領域 */
+.watch-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 稼働ボタン */
+.watch-button {
+  flex-shrink: 0;
 }
 
 /* 駆動方式 */
@@ -218,7 +234,7 @@
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
 
   background-color: #171717;
   color: #fff;
@@ -679,6 +695,141 @@
     font-size: 12px;
     padding: 12px;
   }
+}
+
+/*---------------
+ ログイン画面
+ ---------------*/
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background-color: #f7f7f7;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+  background-color: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+}
+
+/* ロゴ */
+.login-logo {
+  margin-bottom: 48px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #222;
+}
+
+/* 見出し */
+.login-heading {
+  margin-bottom: 32px;
+}
+
+.login-heading h1 {
+  margin-bottom: 10px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #222;
+}
+
+.login-heading p {
+  margin-bottom: 0;
+  font-size: 13px;
+  color: #888;
+}
+
+/* 入力欄 */
+.login-card .form-label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+}
+
+.login-card .form-control {
+  min-height: 46px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.login-card .form-control:focus {
+  border-color: #555;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+}
+
+/* エラーメッセージ */
+.login-error {
+  margin: 16px 0;
+  font-size: 13px;
+  color: #c0392b;
+}
+
+/* ログインボタン */
+.login-submit-button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: #222;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.login-submit-button:hover {
+  background-color: #444;
+}
+
+.login-submit-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+
+/* スマートフォン対応 */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 36px 24px;
+  }
+}
+
+/* ログアウトボタン */
+.watch-logout-button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #555;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.watch-logout-button:hover {
+  border-color: #f5f5f5;
+  background-color: #bbb;
+  color: #555;
+}
+
+.watch-logout-button:active {
+  background-color: #eee;
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 /* 暫定10月------------ */
