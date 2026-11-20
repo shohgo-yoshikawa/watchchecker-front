@@ -903,6 +903,13 @@
   border-radius: 6px;
 }
 
+/* 中古相場の出品件数 */
+.watch-market-count {
+  font-size: 11px;
+  color: #999;
+  margin-top: 3px;
+}
+
 /* 暫定10月------------ */
 
 /* body {

@@ -293,31 +293,45 @@ function WatchDetail() {
         <h2>市場価格</h2>
 
         {marketData?.medianPriceJpy != null ? (
-          <div className="watch-market-summary">
-            <div className="watch-market-main">
-              <span className="watch-market-label">中古価格の参考中央値</span>
+          <>
+            <div className="watch-market-summary">
+              <div className="watch-market-main">
+                {/* 出品件数に応じて表示名を変更 */}
+                <span className="watch-market-label">
+                  {marketData.listingCount === 1
+                    ? "中古価格の参考価格"
+                    : "中古価格の参考中央値"}
+                </span>
 
-              <strong className="watch-market-price">
-                {new Intl.NumberFormat("ja-JP", {
-                  style: "currency",
-                  currency: "JPY",
-                  maximumFractionDigits: 0,
-                }).format(marketData.medianPriceJpy)}
-              </strong>
+                {/* 日本円の価格 */}
+                <strong className="watch-market-price">
+                  {new Intl.NumberFormat("ja-JP", {
+                    style: "currency",
+                    currency: "JPY",
+                    maximumFractionDigits: 0,
+                  }).format(marketData.medianPriceJpy)}
+                </strong>
+
+                {/* 出品件数 */}
+                <span className="watch-market-count">
+                  出品件数：{marketData.listingCount}件
+                </span>
+              </div>
+
+              {/* 前回取得価格との差 */}
+              {marketData.priceDifferenceJpy != null && (
+                <span
+                  className={`watch-market-change ${marketData.priceChange.toLowerCase()}`}
+                >
+                  {marketData.priceDifferenceJpy > 0
+                    ? `+${new Intl.NumberFormat("ja-JP").format(marketData.priceDifferenceJpy)}円`
+                    : marketData.priceDifferenceJpy < 0
+                      ? `−${new Intl.NumberFormat("ja-JP").format(Math.abs(marketData.priceDifferenceJpy))}円`
+                      : "±0円"}
+                </span>
+              )}
             </div>
-
-            {marketData.priceDifferenceJpy != null && (
-              <span
-                className={`watch-market-change ${marketData.priceChange.toLowerCase()}`}
-              >
-                {marketData.priceDifferenceJpy > 0
-                  ? `+${new Intl.NumberFormat("ja-JP").format(marketData.priceDifferenceJpy)}円`
-                  : marketData.priceDifferenceJpy < 0
-                    ? `−${new Intl.NumberFormat("ja-JP").format(Math.abs(marketData.priceDifferenceJpy))}円`
-                    : "±0円"}
-              </span>
-            )}
-          </div>
+          </>
         ) : (
           <div className="watch-detail-market">
             中古相場はまだ取得されていません
@@ -327,7 +341,15 @@ function WatchDetail() {
         {marketError && <p className="text-danger mt-2">{marketError}</p>}
 
         <div className="watch-market-footer">
-          <span>参考：Chrono24</span>
+          {/* 取得元に応じて表示を変更 */}
+          <span>
+            参考：
+            {marketData?.source === "Chrono24 Global"
+              ? "Chrono24（海外出品を含む）"
+              : marketData?.source === "Chrono24 JP"
+                ? "Chrono24（国内出品）"
+                : "Chrono24"}
+          </span>
 
           <Button
             variant="outline-dark"
