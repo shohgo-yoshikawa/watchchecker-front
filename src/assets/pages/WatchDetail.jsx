@@ -21,6 +21,15 @@ function WatchDetail() {
   // エラーメッセージ
   const [errorMessage, setErrorMessage] = useState("");
 
+  // 中古市場価格のデータ
+  const [marketData, setMarketData] = useState(null);
+
+  //中古価格を取得中かどうか
+  const [isLoadingMarket, setIsLoadingMarket] = useState(false);
+
+  //市場価格取得時のエラーメッセージ
+  const [marketError, setMarketError] = useState("");
+
   // 時計の詳細情報を再取得
   const fetchWatch = useCallback(async () => {
     try {
@@ -47,6 +56,22 @@ function WatchDetail() {
       })
       .catch((error) => {
         console.error("時計情報の取得に失敗しました", error);
+      });
+
+    // MySQLに保存されている市場価格を取得
+    axios
+      .get(`http://localhost:8080/api/market/chrono24/${id}/history`)
+      .then((response) => {
+        if (isMounted) {
+          if (response.data.priceChange === "NO_DATA") {
+            setMarketData(null);
+          } else {
+            setMarketData(response.data);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("市場価格の取得に失敗しました", error);
       });
 
     return () => {
@@ -113,6 +138,35 @@ function WatchDetail() {
     } catch (error) {
       console.error("時計の削除に失敗しました", error);
       alert("時計の削除に失敗しました");
+    }
+  };
+
+  // 中古市場価格を取得する
+  const handleFetchMarketPrice = async () => {
+    if (!watch.modelNumber) {
+      setMarketError("時計の型番が登録されていません。");
+      return;
+    }
+
+    setIsLoadingMarket(true);
+    setMarketError("");
+
+    try {
+      // Spring Bootの価格取得APIを呼び出す
+      const response = await axios.get(
+        `http://localhost:8080/api/market/chrono24/${id}/${encodeURIComponent(watch.modelNumber)}`,
+      );
+
+      // 取得した価格データを保存
+      setMarketData(response.data);
+    } catch (error) {
+      console.error("市場価格の取得に失敗しました", error);
+
+      setMarketError(
+        "市場価格を取得できませんでした。時間をおいて再度お試しください。",
+      );
+    } finally {
+      setIsLoadingMarket(false);
     }
   };
 
@@ -238,18 +292,51 @@ function WatchDetail() {
       <section className="watch-detail-section">
         <h2>市場価格</h2>
 
-        <div className="watch-detail-market">
-          <span>↗</span>
-          相場データとの連携は準備中です
-        </div>
-      </section>
+        {marketData?.medianPriceJpy != null ? (
+          <div className="watch-market-summary">
+            <div className="watch-market-main">
+              <span className="watch-market-label">中古価格の参考中央値</span>
 
-      {/* メモ */}
-      <section className="watch-detail-section">
-        <h2>メモ</h2>
+              <strong className="watch-market-price">
+                {new Intl.NumberFormat("ja-JP", {
+                  style: "currency",
+                  currency: "JPY",
+                  maximumFractionDigits: 0,
+                }).format(marketData.medianPriceJpy)}
+              </strong>
+            </div>
 
-        <div className="watch-detail-memo">
-          {watch.memo || "メモはありません。"}
+            {marketData.priceDifferenceJpy != null && (
+              <span
+                className={`watch-market-change ${marketData.priceChange.toLowerCase()}`}
+              >
+                {marketData.priceDifferenceJpy > 0
+                  ? `+${new Intl.NumberFormat("ja-JP").format(marketData.priceDifferenceJpy)}円`
+                  : marketData.priceDifferenceJpy < 0
+                    ? `−${new Intl.NumberFormat("ja-JP").format(Math.abs(marketData.priceDifferenceJpy))}円`
+                    : "±0円"}
+              </span>
+            )}
+          </div>
+        ) : (
+          <div className="watch-detail-market">
+            中古相場はまだ取得されていません
+          </div>
+        )}
+
+        {marketError && <p className="text-danger mt-2">{marketError}</p>}
+
+        <div className="watch-market-footer">
+          <span>参考：Chrono24</span>
+
+          <Button
+            variant="outline-dark"
+            className="watch-market-button"
+            onClick={handleFetchMarketPrice}
+            disabled={isLoadingMarket || !watch.modelNumber}
+          >
+            {isLoadingMarket ? "更新中..." : "相場を更新"}
+          </Button>
         </div>
       </section>
 
