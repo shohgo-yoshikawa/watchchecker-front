@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 // import Badge from "../../../node_modules/react-bootstrap/esm/Badge";
 
 // function WatchCard({ watch }) {
-function WatchCard({ watch, onUse }) {
+function WatchCard({ watch, onUse, isAlarmEnabled }) {
   const navigate = useNavigate();
   //詳細画面へ移動
   const handleDetail = () => {
@@ -13,6 +13,14 @@ function WatchCard({ watch, onUse }) {
 
   //   const isQuartz = watch.movement === "クォーツ";
   const isQuartz = watch.driveType === "クォーツ";
+
+  // 30日以上稼働していない時計かどうか
+  const showAlarm =
+    isAlarmEnabled &&
+    !isQuartz &&
+    typeof watch.daysSinceLastUsed === "number" &&
+    watch.daysSinceLastUsed >= 30;
+
   // 今日の日付を取得
   const today = new Date();
 
@@ -56,21 +64,40 @@ function WatchCard({ watch, onUse }) {
   };
 
   return (
-    <Card className="watch-card" onClick={handleDetail}>
+    // <Card className="watch-card" onClick={handleDetail}>
+    <Card
+      className={`watch-card ${showAlarm ? "watch-card-alarm" : ""}`}
+      onClick={handleDetail}
+    >
       <Card.Body className="d-flex justify-content-between align-items-center">
         <div className="watch-card-info">
           <div className="watch-brand">{watch.brandName}</div>
 
           <Card.Title className="watch-model">{watch.modelName}</Card.Title>
+          {/* ここから次 */}
 
-          <div className="d-flex align-items-center gap-2">
+          <div className="watch-card-status-row">
             <Badge bg="light" text="dark" className="watch-drive-badge">
               {watch.driveType || "未設定"}
             </Badge>
 
-            <small className="text-secondary watch-last-used">
-              {getLastUsedText()}
-            </small>
+            {showAlarm ? (
+              <span className="watch-alarm-badge">
+                <svg
+                  className="watch-alarm-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+                  <path d="M10 21h4" />
+                </svg>
+                最終稼働から{watch.daysSinceLastUsed}日経過
+              </span>
+            ) : (
+              <small className="text-secondary watch-last-used">
+                {getLastUsedText()}
+              </small>
+            )}
           </div>
         </div>
 

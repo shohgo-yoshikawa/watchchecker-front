@@ -910,6 +910,351 @@
   margin-top: 3px;
 }
 
+/* ========================================
+   中古相場エリア
+======================================== */
+
+/* 中古相場の見出しと更新ボタン */
+.watch-market-section {
+  margin-top: 28px;
+}
+
+.watch-market-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.watch-market-heading h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* 相場を更新ボタン */
+.watch-market-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 0 4px 8px;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-size: 11px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* マウスを乗せたとき文字を少し濃くする */
+.watch-market-refresh:hover:not(:disabled) {
+  color: #222;
+}
+
+.watch-market-refresh:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* キーボード操作時のフォーカス表示 */
+.watch-market-refresh:focus-visible {
+  outline: 1px solid #888;
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+/* 相場情報のカード */
+.watch-market-card {
+  padding: 15px 16px;
+  background: #fff;
+  border: 1px solid #dedede;
+  border-radius: 17px;
+}
+
+/* 価格と前回比のエリア */
+.watch-market-card-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+}
+
+/* 参考中央値・参考価格のラベル */
+.watch-market-label {
+  font-size: 13px;
+  font-weight: 400;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 価格と前回比を右側に配置 */
+.watch-market-price-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+/* 価格 */
+.watch-market-price {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #222;
+  letter-spacing: 0;
+}
+
+/* 前回比 */
+.watch-market-change {
+  font-size: 10px;
+  font-weight: 400;
+  color: #888;
+  line-height: 1.4;
+}
+
+/* 出品件数・取得元・取得日 */
+.watch-market-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  padding-top: 11px;
+  border-top: 1px solid #dedede;
+  font-size: 10px;
+  font-weight: 400;
+  color: #777;
+  line-height: 1.6;
+}
+
+/* 相場が未取得の場合 */
+.watch-market-empty {
+  padding: 7px 0;
+  font-size: 12px;
+  color: #888;
+}
+
+/* スマートフォン表示 */
+@media (max-width: 480px) {
+  .watch-market-card {
+    padding: 14px;
+    border-radius: 15px;
+  }
+
+  .watch-market-card-main {
+    gap: 8px;
+  }
+
+  .watch-market-label {
+    font-size: 12px;
+  }
+
+  .watch-market-price {
+    font-size: 13px;
+  }
+
+  .watch-market-meta {
+    font-size: 9px;
+    gap: 4px;
+  }
+}
+
+/* ========================================
+   稼働アラート：時計一覧
+======================================== */
+
+/* 時計カード内の情報部分 */
+.watch-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 駆動方式と稼働状況を並べる */
+.watch-card-status-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  min-width: 0;
+}
+
+/* 稼働アラートのラベル */
+.watch-alarm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border: 1px solid #f0d8b5;
+  border-radius: 20px;
+  background-color: #fff3e1;
+  color: #90602e;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ベルアイコン */
+.watch-alarm-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ========================================
+   アラート対象の時計カード
+======================================== */
+
+/* 通常時の黄色いアクセント */
+.watch-card.watch-card-alarm {
+  border-color: #f0d9b8 !important;
+  box-shadow: 0 2px 7px rgba(190, 140, 70, 0.12);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* アラート対象カードのマウスオーバー */
+.watch-card.watch-card-alarm:hover {
+  border-color: #d8b88c !important;
+  box-shadow: 0 3px 10px rgba(190, 140, 70, 0.18);
+}
+
+/* 通常カードのマウスオーバー */
+.watch-card:not(.watch-card-alarm):hover {
+  border-color: #c9c9c9;
+}
+
+/* 稼働アラートの設定エリア */
+.watch-alarm-setting {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.watch-alarm-setting-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.watch-alarm-setting-text span {
+  font-size: 13px;
+  color: #222;
+}
+
+.watch-alarm-setting-text small {
+  font-size: 10px;
+  color: #888;
+}
+
+/* Bootstrapのスイッチの余白を調整 */
+.watch-alarm-setting .form-check {
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.watch-alarm-setting .form-check-input {
+  float: none;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* 稼働アラートスイッチ：モノトーン */
+.watch-alarm-setting .form-check-input {
+  width: 36px;
+  height: 20px;
+  margin: 0;
+  background-color: #dedede !important;
+  border: 1px solid #dedede !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* ON：黒い背景 */
+.watch-alarm-setting .form-check-input:checked {
+  background-color: #171717 !important;
+  border-color: #171717 !important;
+  background-position: right center;
+}
+
+/* フォーカス時も青色にしない */
+.watch-alarm-setting .form-check-input:focus {
+  border-color: #999;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ONのフォーカス時 */
+.watch-alarm-setting .form-check-input:checked:focus {
+  border-color: #171717;
+}
+
+/* アラート設定と検索欄の間隔 */
+.watch-list-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+/* アラート設定の文字とスイッチ */
+.watch-alarm-setting {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* -------------
+   稼働アラート：時計詳細画面
+ ------------- */
+
+.watch-detail-alarm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin-top: 8px;
+  padding: 4px 11px;
+  border: 1px solid #f0d8b5;
+  border-radius: 20px;
+  background-color: #fff3e1;
+  color: #90602e;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.watch-detail-alarm-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* 暫定10月------------ */
 
 /* body {

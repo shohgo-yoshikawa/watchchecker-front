@@ -30,6 +30,11 @@ function WatchDetail() {
   //市場価格取得時のエラーメッセージ
   const [marketError, setMarketError] = useState("");
 
+  // 稼働アラートのON/OFF設定を読み込む
+  const [isAlarmEnabled] = useState(() => {
+    return localStorage.getItem("watchAlarmEnabled") !== "false";
+  });
+
   // 時計の詳細情報を再取得
   const fetchWatch = useCallback(async () => {
     try {
@@ -82,6 +87,13 @@ function WatchDetail() {
   // 日付を YYYY.MM.DD 形式に整える
   const formatDate = (date) => {
     if (!date) return "未登録";
+
+    return String(date).slice(0, 10).replaceAll("-", ".");
+  };
+
+  // 相場取得日を YYYY.MM.DD 形式に整える
+  const formatMarketDate = (date) => {
+    if (!date) return "";
 
     return String(date).slice(0, 10).replaceAll("-", ".");
   };
@@ -152,13 +164,24 @@ function WatchDetail() {
     setMarketError("");
 
     try {
-      // Spring Bootの価格取得APIを呼び出す
+      // ① Chrono24から最新の相場を取得してMySQLに保存
       const response = await axios.get(
         `http://localhost:8080/api/market/chrono24/${id}/${encodeURIComponent(watch.modelNumber)}`,
       );
 
-      // 取得した価格データを保存
-      setMarketData(response.data);
+      // ② MySQLから保存した最新の履歴を再取得
+      try {
+        const historyResponse = await axios.get(
+          `http://localhost:8080/api/market/chrono24/${id}/history`,
+        );
+
+        // 履歴に保存された最新データを画面に反映
+        setMarketData(historyResponse.data);
+      } catch (historyError) {
+        // 履歴の取得に失敗した場合は、最初のAPI応答を使用
+        console.error("市場価格履歴の取得に失敗しました", historyError);
+        setMarketData(response.data);
+      }
     } catch (error) {
       console.error("市場価格の取得に失敗しました", error);
 
@@ -183,6 +206,13 @@ function WatchDetail() {
   }
 
   const isQuartz = watch.driveType === "クォーツ";
+
+  // 稼働アラートを表示するか判定
+  const showAlarm =
+    isAlarmEnabled &&
+    !isQuartz &&
+    typeof watch.daysSinceLastUsed === "number" &&
+    watch.daysSinceLastUsed >= 30;
 
   // 今日の日付を取得（ブラウザのローカル時間）
   const today = new Date();
@@ -221,6 +251,20 @@ function WatchDetail() {
         <h1>{watch.modelName}</h1>
 
         <p className="watch-detail-status">{getLastUsedText()}</p>
+        {/* 30日以上未稼働の場合のアラート */}
+        {showAlarm && (
+          <div className="watch-detail-alarm">
+            <svg
+              className="watch-detail-alarm-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+              <path d="M10 21h4" />
+            </svg>
+            <span>最終稼働から{watch.daysSinceLastUsed}日経過</span>
+          </div>
+        )}
       </header>
 
       {/* 稼働記録ボタン */}
@@ -288,78 +332,88 @@ function WatchDetail() {
         )}
       </div>
 
-      {/* 市場価格 */}
-      <section className="watch-detail-section">
-        <h2>市場価格</h2>
+      {/* 中古相場 */}
+      <section className="watch-detail-section watch-market-section">
+        {/* 見出しと更新ボタン */}
+        <div className="watch-market-heading">
+          <h2>中古相場</h2>
 
-        {marketData?.medianPriceJpy != null ? (
-          <>
-            <div className="watch-market-summary">
-              <div className="watch-market-main">
-                {/* 出品件数に応じて表示名を変更 */}
+          <button
+            type="button"
+            className="watch-market-refresh"
+            onClick={handleFetchMarketPrice}
+            disabled={isLoadingMarket || !watch.modelNumber}
+          >
+            <span>↻</span>
+            {isLoadingMarket ? "取得中..." : "相場を更新"}
+          </button>
+        </div>
+
+        {/* 相場データ */}
+        <div className="watch-market-card">
+          {marketData?.medianPriceJpy != null ? (
+            <>
+              {/* 価格と前回比 */}
+              <div className="watch-market-card-main">
                 <span className="watch-market-label">
                   {marketData.listingCount === 1
                     ? "中古価格の参考価格"
                     : "中古価格の参考中央値"}
                 </span>
 
-                {/* 日本円の価格 */}
-                <strong className="watch-market-price">
-                  {new Intl.NumberFormat("ja-JP", {
-                    style: "currency",
-                    currency: "JPY",
-                    maximumFractionDigits: 0,
-                  }).format(marketData.medianPriceJpy)}
-                </strong>
+                <div className="watch-market-price-area">
+                  <strong className="watch-market-price">
+                    {new Intl.NumberFormat("ja-JP", {
+                      style: "currency",
+                      currency: "JPY",
+                      maximumFractionDigits: 0,
+                    }).format(marketData.medianPriceJpy)}
+                  </strong>
 
-                {/* 出品件数 */}
-                <span className="watch-market-count">
-                  出品件数：{marketData.listingCount}件
-                </span>
+                  {marketData.priceDifferenceJpy != null && (
+                    <span className="watch-market-change">
+                      前回比{" "}
+                      {marketData.priceDifferenceJpy > 0
+                        ? `+¥${new Intl.NumberFormat("ja-JP").format(marketData.priceDifferenceJpy)}`
+                        : marketData.priceDifferenceJpy < 0
+                          ? `−¥${new Intl.NumberFormat("ja-JP").format(Math.abs(marketData.priceDifferenceJpy))}`
+                          : "±¥0"}
+                    </span>
+                  )}
+                </div>
               </div>
 
-              {/* 前回取得価格との差 */}
-              {marketData.priceDifferenceJpy != null && (
-                <span
-                  className={`watch-market-change ${marketData.priceChange.toLowerCase()}`}
-                >
-                  {marketData.priceDifferenceJpy > 0
-                    ? `+${new Intl.NumberFormat("ja-JP").format(marketData.priceDifferenceJpy)}円`
-                    : marketData.priceDifferenceJpy < 0
-                      ? `−${new Intl.NumberFormat("ja-JP").format(Math.abs(marketData.priceDifferenceJpy))}円`
-                      : "±0円"}
+              {/* 出品件数・取得元・取得日 */}
+              <div className="watch-market-meta">
+                <span>出品件数 {marketData.listingCount}件</span>
+
+                <span>・</span>
+
+                <span>
+                  参考：
+                  {marketData.source === "Chrono24 Global"
+                    ? "Chrono24（海外出品を含む）"
+                    : marketData.source === "Chrono24 JP"
+                      ? "Chrono24（国内出品）"
+                      : "Chrono24"}
                 </span>
-              )}
+
+                {marketData.fetchedAt && (
+                  <>
+                    <span>・</span>
+                    <span>{formatMarketDate(marketData.fetchedAt)}取得</span>
+                  </>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="watch-market-empty">
+              中古相場はまだ取得されていません
             </div>
-          </>
-        ) : (
-          <div className="watch-detail-market">
-            中古相場はまだ取得されていません
-          </div>
-        )}
+          )}
+        </div>
 
         {marketError && <p className="text-danger mt-2">{marketError}</p>}
-
-        <div className="watch-market-footer">
-          {/* 取得元に応じて表示を変更 */}
-          <span>
-            参考：
-            {marketData?.source === "Chrono24 Global"
-              ? "Chrono24（海外出品を含む）"
-              : marketData?.source === "Chrono24 JP"
-                ? "Chrono24（国内出品）"
-                : "Chrono24"}
-          </span>
-
-          <Button
-            variant="outline-dark"
-            className="watch-market-button"
-            onClick={handleFetchMarketPrice}
-            disabled={isLoadingMarket || !watch.modelNumber}
-          >
-            {isLoadingMarket ? "更新中..." : "相場を更新"}
-          </Button>
-        </div>
       </section>
 
       {/* 時計の削除 */}

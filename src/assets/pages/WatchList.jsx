@@ -31,6 +31,11 @@ function WatchList() {
   // 新規登録モーダルの表示状態
   const [showCreate, setShowCreate] = useState(false);
 
+  // 稼働アラートのON/OFF状態
+  const [isAlarmEnabled, setIsAlarmEnabled] = useState(() => {
+    return localStorage.getItem("watchAlarmEnabled") !== "false";
+  });
+
   //画面が表示された時にAPIからデータを取得
   const fetchWatches = () => {
     // useEffect(() => {
@@ -47,6 +52,11 @@ function WatchList() {
   useEffect(() => {
     fetchWatches();
   }, []);
+
+  // アラート設定をlocalStorageに保存
+  useEffect(() => {
+    localStorage.setItem("watchAlarmEnabled", isAlarmEnabled);
+  }, [isAlarmEnabled]);
 
   //稼働管理の対象となる時計の本数
   const managedCount = watches.filter(
@@ -86,15 +96,33 @@ function WatchList() {
             {watches.length}本 ・ 稼働管理 {managedCount}本
           </p>
         </div>
-        {/* 時計の検索 */}
-        <Form.Control
-          type="text"
-          placeholder="ブランド名・モデル名・型番で検索"
-          value={keyword}
-          onChange={(event) => setKeyword(event.target.value)}
-          className="watch-search"
-          area-label="時計を検索"
-        />
+
+        {/* 右側の設定エリア */}
+        <div className="watch-list-tools">
+          {/* 稼働アラートのON/OFF */}
+          <div className="watch-alarm-setting">
+            <div className="watch-alarm-setting-text">
+              <span>稼働アラート</span>
+              <small>30日以上稼働していない時計を通知</small>
+            </div>
+            <Form.Check
+              type="switch"
+              id="watch-alarm-toggle"
+              checked={isAlarmEnabled}
+              onChange={(event) => setIsAlarmEnabled(event.target.checked)}
+              aria
+            />
+          </div>
+          {/* 時計の検索 */}
+          <Form.Control
+            type="text"
+            placeholder="ブランド名・モデル名・型番で検索"
+            value={keyword}
+            onChange={(event) => setKeyword(event.target.value)}
+            className="watch-search"
+            area-label="時計を検索"
+          />
+        </div>
       </div>
       {/* 時計カード一覧 */}
       {filteredWatches.length === 0 ? (
@@ -103,7 +131,11 @@ function WatchList() {
         <Row xs={1} sm={2} lg={3} className="g-3">
           {filteredWatches.map((watch) => (
             <Col key={watch.id}>
-              <WatchCard watch={watch} onUse={fetchWatches} />
+              <WatchCard
+                watch={watch}
+                onUse={fetchWatches}
+                isAlarmEnabled={isAlarmEnabled}
+              />
             </Col>
           ))}
         </Row>
