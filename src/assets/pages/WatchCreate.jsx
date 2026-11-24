@@ -23,7 +23,7 @@ function WatchCreate({ show, onHide, onCreated }) {
     if (!show) return;
 
     axios
-      .get("http://localhost:8080/api/brands")
+      .get("/api/brands")
       .then((response) => {
         setBrands(response.data);
       })
@@ -79,7 +79,7 @@ function WatchCreate({ show, onHide, onCreated }) {
     };
 
     try {
-      await axios.post("http://localhost:8080/api/watches", watchData);
+      await axios.post("/api/watches", watchData);
 
       //登録成功後に一覧を更新
       onCreated();
@@ -311,7 +311,7 @@ export default WatchCreate;
 
 //     try {
 //       //Spring Bootに時計情報を送信
-//       await axios.post("http://localhost:8080/api/watches", watchData);
+//       await axios.post("/api/watches", watchData);
 //       //登録成功後、時計一覧画面へ移動
 //       navigate("/watches");
 //     } catch (error) {

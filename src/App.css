@@ -8,9 +8,9 @@
     box-shadow 0.2 ease;
 }
 
-.watch-card:hovor {
-  background-color: #bdbdbd;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+.watch-card:hover {
+  /* background-color: #bdbdbd; */
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .watch-card .card-body {
@@ -1159,19 +1159,21 @@
   color: #888;
 }
 
-/* Bootstrapのスイッチの余白を調整 */
-.watch-alarm-setting .form-check {
-  margin: 0;
-  padding: 0;
-  min-height: 0;
-}
-
 .watch-alarm-setting .form-check-input {
   float: none;
   margin: 0;
   cursor: pointer;
 }
 
+/* 稼働アラートスイッチの親要素 */
+.watch-alarm-setting .form-check.form-switch {
+  padding-left: 0;
+  margin: 0;
+  min-height: 0;
+}
+.form-switch {
+  padding-left: 0em;
+}
 /* 稼働アラートスイッチ：モノトーン */
 .watch-alarm-setting .form-check-input {
   width: 36px;

@@ -38,9 +38,7 @@ function WatchDetail() {
   // 時計の詳細情報を再取得
   const fetchWatch = useCallback(async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/watches/${id}`,
-      );
+      const response = await axios.get(`/api/watches/${id}`);
 
       setWatch(response.data);
     } catch (error) {
@@ -53,7 +51,7 @@ function WatchDetail() {
     let isMounted = true;
 
     axios
-      .get(`http://localhost:8080/api/watches/${id}`)
+      .get(`/api/watches/${id}`)
       .then((response) => {
         if (isMounted) {
           setWatch(response.data);
@@ -65,7 +63,7 @@ function WatchDetail() {
 
     // MySQLに保存されている市場価格を取得
     axios
-      .get(`http://localhost:8080/api/market/chrono24/${id}/history`)
+      .get(`/api/market/chrono24/${id}/history`)
       .then((response) => {
         if (isMounted) {
           if (response.data.priceChange === "NO_DATA") {
@@ -125,7 +123,7 @@ function WatchDetail() {
     setErrorMessage("");
 
     try {
-      await axios.post(`http://localhost:8080/api/watches/${id}/use`);
+      await axios.post(`/api/watches/${id}/use`);
 
       // 稼働記録後に詳細情報を再取得
       await fetchWatch();
@@ -144,7 +142,7 @@ function WatchDetail() {
     if (!result) return;
 
     try {
-      await axios.delete(`http://localhost:8080/api/watches/${id}`);
+      await axios.delete(`/api/watches/${id}`);
 
       navigate("/watches");
     } catch (error) {
@@ -166,13 +164,13 @@ function WatchDetail() {
     try {
       // ① Chrono24から最新の相場を取得してMySQLに保存
       const response = await axios.get(
-        `http://localhost:8080/api/market/chrono24/${id}/${encodeURIComponent(watch.modelNumber)}`,
+        `/api/market/chrono24/${id}/${encodeURIComponent(watch.modelNumber)}`,
       );
 
       // ② MySQLから保存した最新の履歴を再取得
       try {
         const historyResponse = await axios.get(
-          `http://localhost:8080/api/market/chrono24/${id}/history`,
+          `/api/market/chrono24/${id}/history`,
         );
 
         // 履歴に保存された最新データを画面に反映

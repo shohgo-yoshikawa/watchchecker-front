@@ -25,7 +25,7 @@ function Login() {
 
     try {
       // Spring BootのログインAPIに情報を送信
-      await axios.post("http://localhost:8080/api/auth/login", {
+      await axios.post("/api/auth/login", {
         loginId: loginId,
         loginPass: loginPass,
       });

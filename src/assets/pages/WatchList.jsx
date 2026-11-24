@@ -14,7 +14,7 @@ function WatchList() {
   const handleLogout = async () => {
     try {
       // Spring BootのログアウトAPIを呼び出す
-      await axios.post("http://localhost:8080/api/auth/logout");
+      await axios.post("/api/auth/logout");
 
       // ログイン画面に移動
       navigate("/login", { replace: true });
@@ -40,7 +40,7 @@ function WatchList() {
   const fetchWatches = () => {
     // useEffect(() => {
     axios
-      .get("http://localhost:8080/api/watches")
+      .get("/api/watches")
       .then((response) => {
         setWatches(response.data);
       })

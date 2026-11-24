@@ -39,7 +39,7 @@ function WatchCard({ watch, onUse, isAlarmEnabled }) {
   //稼働を記録する処理
   const handleUse = async () => {
     try {
-      await axios.post(`http://localhost:8080/api/watches/${watch.id}/use`);
+      await axios.post(`/api/watches/${watch.id}/use`);
       //登録成功後に親コンポーネントへ通知
       onUse();
     } catch (error) {

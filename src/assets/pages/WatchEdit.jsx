@@ -38,8 +38,8 @@ function WatchEdit({ id, show, onHide, onUpdated }) {
       try {
         //ブランド一覧と時計情報を同時に取得
         const [brandResponse, watchResponse] = await Promise.all([
-          axios.get("http://localhost:8080/api/brands"),
-          axios.get(`http://localhost:8080/api/watches/${id}`),
+          axios.get("/api/brands"),
+          axios.get(`/api/watches/${id}`),
         ]);
         if (cancelled) return;
         const watch = watchResponse.data;
@@ -150,7 +150,7 @@ function WatchEdit({ id, show, onHide, onUpdated }) {
 
     try {
       // Spring Bootの更新APIを呼び出す
-      await axios.put(`http://localhost:8080/api/watches/${id}`, watchData);
+      await axios.put(`/api/watches/${id}`, watchData);
     } catch (error) {
       console.error("時計の更新に失敗しました", error);
 
@@ -367,7 +367,7 @@ export default WatchEdit;
 // await onUpdate();
 
 //     axios
-//       .get("http://localhost:8080/api/brands")
+//       .get("/api/brands")
 //       .then((response) => {
 //         setBrands(response.data);
 //       })
@@ -377,7 +377,7 @@ export default WatchEdit;
 
 //     //編集対象の時計情報を取得
 //     axios
-//       .get(`http://localhost:8080/api/watches/${id}`)
+//       .get(`/api/watches/${id}`)
 //       .then((response) => {
 //         const watch = response.data;
 
@@ -421,7 +421,7 @@ export default WatchEdit;
 
 //     try {
 //       //Spring Bootに時計情報を送信
-//       await axios.put(`http://localhost:8080/api/watches/${id}`, watchData);
+//       await axios.put(`/api/watches/${id}`, watchData);
 
 //       //更新成功後、時計詳細画面へ移動
 //       navigate(`/watches/${id}`);

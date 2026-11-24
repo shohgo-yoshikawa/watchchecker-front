@@ -11,7 +11,7 @@ function RequireAuth() {
 
     //Spring Bootにログイン状態を確認する
     axios
-      .get("http://localhost:8080/api/auth/me")
+      .get("/api/auth/me")
       .then(() => {
         if (isMounted) {
           setAuthStatus("authenticated");
