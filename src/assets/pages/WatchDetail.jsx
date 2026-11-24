@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Modal } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import WatchEdit from "./WatchEdit";
 
@@ -14,6 +14,12 @@ function WatchDetail() {
 
   // 編集モーダルの表示状態
   const [showEdit, setShowEdit] = useState(false);
+
+  // 削除確認モーダルの表示状態
+  const [showDelete, setShowDelete] = useState(false);
+
+  // 時計を削除中かどうか
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 稼働記録中かどうか
   const [isUsing, setIsUsing] = useState(false);
@@ -137,9 +143,7 @@ function WatchDetail() {
 
   // 時計を削除する
   const handleDelete = async () => {
-    const result = window.confirm("この時計を削除してもよろしいですか？");
-
-    if (!result) return;
+    setIsDeleting(true);
 
     try {
       await axios.delete(`/api/watches/${id}`);
@@ -148,6 +152,7 @@ function WatchDetail() {
     } catch (error) {
       console.error("時計の削除に失敗しました", error);
       alert("時計の削除に失敗しました");
+      setIsDeleting(false);
     }
   };
 
@@ -414,14 +419,53 @@ function WatchDetail() {
         {marketError && <p className="text-danger mt-2">{marketError}</p>}
       </section>
 
-      {/* 時計の削除 */}
+      {/* 時計の削除ボタン */}
       <button
         type="button"
         className="watch-detail-delete"
-        onClick={handleDelete}
+        onClick={() => setShowDelete(true)}
       >
         この時計を削除
       </button>
+
+      {/* 削除確認モーダル */}
+      <Modal
+        show={showDelete}
+        onHide={() => {
+          if (!isDeleting) setShowDelete(false);
+        }}
+        centered
+        dialogClassName="watch-delete-modal"
+        backdropClassName="watch-delete-backdrop"
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Body>
+          <p className="watch-delete-title">
+            {watch.modelName} を削除しますか？
+          </p>
+
+          <p className="watch-delete-message">この操作は取り消せません。</p>
+
+          <button
+            type="button"
+            className="watch-delete-confirm"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "削除中..." : "削除する"}
+          </button>
+
+          <button
+            type="button"
+            className="watch-delete-cancel"
+            onClick={() => setShowDelete(false)}
+            disabled={isDeleting}
+          >
+            キャンセル
+          </button>
+        </Modal.Body>
+      </Modal>
 
       {/* 編集モーダル */}
       <WatchEdit

@@ -1257,6 +1257,112 @@
   stroke-linejoin: round;
 }
 
+/* =========================
+   時計削除確認モーダル
+========================= */
+
+/* モーダルの幅 */
+.watch-delete-modal {
+  width: calc(100% - 32px);
+  max-width: 320px;
+  margin: auto;
+}
+
+/* 白いモーダル本体 */
+.watch-delete-modal .modal-content {
+  border: none;
+  border-radius: 22px;
+  background-color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* モーダル内部 */
+.watch-delete-modal .modal-body {
+  padding: 28px 24px 24px;
+  text-align: center;
+}
+
+/* 削除する時計のモデル名 */
+.watch-delete-title {
+  margin: 0 0 8px;
+  color: #171717;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* 注意メッセージ */
+.watch-delete-message {
+  margin: 0 0 24px;
+  color: #666;
+  font-size: 13px;
+}
+
+/* 削除ボタン */
+.watch-delete-confirm {
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  border-radius: 14px;
+  background-color: #bd4038;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 削除ボタンにマウスを乗せたとき */
+.watch-delete-confirm:hover:not(:disabled) {
+  background-color: #c6534b;
+}
+
+/* 削除ボタンのフォーカス */
+.watch-delete-confirm:focus-visible {
+  outline: 2px solid #bd4038;
+  outline-offset: 3px;
+}
+
+/* 削除中 */
+.watch-delete-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* キャンセルボタン */
+.watch-delete-cancel {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 7px 0;
+  border: none;
+  background-color: transparent;
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* キャンセルにマウスを乗せたとき */
+.watch-delete-cancel:hover:not(:disabled) {
+  color: #171717;
+}
+
+/* キャンセルボタンのフォーカス */
+.watch-delete-cancel:focus-visible {
+  outline: 1px solid #888;
+  outline-offset: 2px;
+}
+
+/* スマートフォン */
+@media (max-width: 575px) {
+  .watch-delete-modal {
+    width: calc(100% - 32px);
+  }
+}
+
 /* 暫定10月------------ */
 
 /* body {
