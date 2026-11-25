@@ -114,14 +114,25 @@ function WatchList() {
             />
           </div>
           {/* 時計の検索 */}
-          <Form.Control
-            type="text"
-            placeholder="ブランド名・モデル名・型番で検索"
-            value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
-            className="watch-search"
-            area-label="時計を検索"
-          />
+          <div className="watch-search-wrap">
+            <svg
+              className="watch-search-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+
+            <Form.Control
+              type="text"
+              placeholder="ブランド名・モデル名・型番で検索"
+              value={keyword}
+              onChange={(event) => setKeyword(event.target.value)}
+              className="watch-search"
+              area-label="時計を検索"
+            />
+          </div>
         </div>
       </div>
       {/* 時計カード一覧 */}

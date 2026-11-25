@@ -93,19 +93,58 @@
 
 /* 検索欄 */
 
+/* 検索窓を包む領域 */
+.watch-search-wrap {
+  position: relative;
+  width: 260px;
+  max-width: 100%;
+}
+
+/* 検索アイコン */
+.watch-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: #999;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/* 検索入力欄 */
 .watch-search {
+  width: 100%;
+  max-width: none;
+  padding: 9px 15px 9px 36px;
+  border: 1px solid #dedede;
+  border-radius: 24px;
+  background-color: #fff;
+  font-size: 12px;
+}
+
+/* フォーカス時 */
+.watch-search:focus {
+  border-color: #999;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+}
+/* .watch-search {
   max-width: 290px;
   border: 1px solid #dedede;
   border-radius: 24px;
   padding: 9px 15px;
   background-color: #fff;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .watch-search:focus {
   border-color: #999;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
-}
+} */
 
 /* 時計カード */
 .watch-card {
