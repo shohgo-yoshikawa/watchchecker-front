@@ -1062,6 +1062,14 @@
   color: #888;
 }
 
+/* 型番不明で中古相場を取得できない場合 */
+.watch-market-unavailable {
+  margin: 0 0 10px;
+  color: #888;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
 /* スマートフォン表示 */
 @media (max-width: 480px) {
   .watch-market-card {

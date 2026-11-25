@@ -158,8 +158,8 @@ function WatchDetail() {
 
   // 中古市場価格を取得する
   const handleFetchMarketPrice = async () => {
-    if (!watch.modelNumber) {
-      setMarketError("時計の型番が登録されていません。");
+    if (!watch.modelNumber || watch.modelNumber === "不明") {
+      setMarketError("型番が不明のため、中古相場を取得できません。");
       return;
     }
 
@@ -345,7 +345,11 @@ function WatchDetail() {
             type="button"
             className="watch-market-refresh"
             onClick={handleFetchMarketPrice}
-            disabled={isLoadingMarket || !watch.modelNumber}
+            disabled={
+              isLoadingMarket ||
+              !watch.modelNumber ||
+              watch.modelNumber === "不明"
+            }
           >
             <span>↻</span>
             {isLoadingMarket ? "取得中..." : "相場を更新"}
@@ -413,6 +417,11 @@ function WatchDetail() {
             <div className="watch-market-empty">
               中古相場はまだ取得されていません
             </div>
+          )}
+          {watch.modelNumber === "不明" && (
+            <p className="watch-market-unavailable">
+              型番不明のため中古相場を取得できません
+            </p>
           )}
         </div>
 
