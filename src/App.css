@@ -804,6 +804,31 @@
   }
 }
 
+/* デモ利用についての注意書き */
+.login-demo-notice {
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+}
+
+/* 注意書きの見出し */
+.login-demo-notice-title {
+  margin-bottom: 7px;
+  color: #444;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 注意書きの本文 */
+.login-demo-notice-text {
+  margin-bottom: 0;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
 /* ログアウトボタン */
 .watch-logout-button {
   padding: 8px 16px;

@@ -53,6 +53,20 @@ function Login() {
           <p>アカウント情報を入力してください。</p>
         </div>
 
+        {/* デモ利用時の注意書き */}
+        <div className="login-demo-notice">
+          <p className="login-demo-notice-title">デモ利用について</p>
+          <p className="login-demo-notice-text">
+            こちらは複数の方で共用するデモアカウントです。
+            <br />
+            登録・編集・削除した時計データや稼働記録は、
+            ほかの利用者にも表示されます。
+            <br />
+            個人情報や実際に使用しているパスワードなど、
+            機密情報は入力しないでください。
+          </p>
+        </div>
+
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>ログインID</Form.Label>
