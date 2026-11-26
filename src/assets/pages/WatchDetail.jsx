@@ -428,6 +428,19 @@ function WatchDetail() {
         {marketError && <p className="text-danger mt-2">{marketError}</p>}
       </section>
 
+      {/* メモ */}
+      <section className="watch-detail-section watch-market-section">
+        <div className="watch-market-heading">
+          <h2>メモ</h2>
+        </div>
+
+        <div className="watch-market-card">
+          <p className="watch-detail-memo-text">
+            {watch.memo || "メモはありません"}
+          </p>
+        </div>
+      </section>
+
       {/* 時計の削除ボタン */}
       <button
         type="button"
